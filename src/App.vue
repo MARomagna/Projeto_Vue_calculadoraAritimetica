@@ -1,58 +1,48 @@
 <script setup>
-import { computed, reactive } from 'vue'
+import { reactive } from 'vue'
+import Header from './components/Header.vue'
+import Corpo from './components/Corpo.vue'
 
-const nome = 'Calculadora Aritimetica'
 const estado = reactive({
-  resultado: 0,
-  n1: 0,
-  n2: 0,
-  soma: 'Soma',
-  sub: 'Subtracao',
-  mult: 'Multiplicacao',
-  div: 'Divisao'
+  operacao: 'Somar',
+  numero1: 0,
+  numero2: 0,
+  resultado: 0
 })
-const operacao = {
-  soma: true,
-  sub: false,
-  mult: false,
-  div: false
+
+const somar = () =>
+  (estado.resultado = Number(estado.numero1) + Number(estado.numero2))
+const subtrair = () =>
+  (estado.resultado = Number(estado.numero1) - Number(estado.numero2))
+const multiplicar = () =>
+  (estado.resultado = Number(estado.numero1) * Number(estado.numero2))
+const dividir = () =>
+  (estado.resultado = Number(estado.numero1) / Number(estado.numero2))
+
+const filtrarOperacao = () => {
+  switch (estado.operacao) {
+    case 'Somar':
+      return somar()
+    case 'Subtrair':
+      return subtrair()
+    case 'Multiplicar':
+      return multiplicar()
+    case 'Dividir':
+      return dividir()
+    default:
+      ''
+  }
 }
 </script>
 
 <template>
-  <h1>{{ nome }}</h1>
-  <input
-    @keyup="(evento) => (estado.n1 = evento.target.value)"
-    type="number"
-    placeholder="Primeiro numero"
-  /><br />
-  <input
-    @keyup="(evento) => (estado.n2 = evento.target.value)"
-    type="number"
-    placeholder="Segundo numero"
-  />
-  <select name="operacoes" v-model="operacao">
-    <option value="soma">{{ estado.soma }}</option>
-    <option value="sub">{{ estado.sub }}</option>
-    <option value="mult">{{ estado.mult }}</option>
-    <option value="div">{{ estado.div }}</option>
-  </select>
-  <br />
-  Resultados:
-  <p v-if="operacao == 'soma'">{{ number(estado.n1) + number(estado.n2) }}</p>
-  <p v-else-if="operacao == 'sub'">{{ estado.n1 - estado.n2 }}</p>
-  <p v-else-if="operacao == 'mult'">{{ estado.n1 * estado.n2 }}</p>
-  <p v-else-if="operacao == 'div'">{{ estado.n1 / estado.n2 }}</p>
-  Primeiro valor escolhido: {{ estado.n1 }} <br />Segundo valor escolhido:
-  {{ estado.n2 }} <br />
+  <div class="container">
+    <Header />
+    <Corpo
+      :trocar-operacao="(evento) => (estado.operacao = evento.target.value)"
+      :operacao="filtrarOperacao()"
+      :numero1="(evento) => (estado.numero1 = evento.target.value)"
+      :numero2="(evento) => (estado.numero2 = evento.target.value)"
+    />
+  </div>
 </template>
-
-<style scoped>
-* {
-  max-width: 960px;
-}
-h1 {
-  text-align: center;
-  background: rgb(248, 195, 98);
-}
-</style>
